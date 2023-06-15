@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('user', function (Blueprint $table) {
             $table->foreignUlid('id_pegawai')->references('id')->on('pegawai');
             $table->string('password');
             $table->rememberToken();
@@ -42,13 +42,13 @@ return new class extends Migration
      */
     public function down()
     {
-        if(Schema::hasTable('users'))
+        if(Schema::hasTable('user'))
         {
-            Schema::table('users', function(Blueprint $t){
+            Schema::table('user', function(Blueprint $t){
                 $t->dropConstrainedForeignId('id_pegawai');
             });
         }
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user');
         Schema::dropIfExists('pegawai');
     }
 };

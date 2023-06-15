@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pegawai;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -20,6 +23,8 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+
+    protected $id_pegawai = "";
 
     /**
      * Where to redirect users after login.
@@ -37,4 +42,62 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    public function login(Request $request)
+    {
+        
+        $this->validateLogin($request);
+
+
+        #region cek nip/nrk
+        $this->id_pegawai = "";
+        if($pegawai = Pegawai::where('nip','=',$request['email'])->where("aktif",true)->get()->first())
+        {
+            $this->id_pegawai = $pegawai->id;
+        }
+        elseif($pegawai = Pegawai::where('nrk','=',$request['email'])->where("aktif",true)->get()->first())
+        {
+            $this->id_pegawai = $pegawai->id;
+        }
+
+        if($this->id_pegawai == "")
+        {
+            return $this->sendFailedLoginResponse($request);
+        }
+            
+        #endregion
+
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($this->attemptLogin($request)) {
+            if ($request->hasSession()) {
+                $request->session()->put('auth.password_confirmed_at', time());
+            }
+
+            return $this->sendLoginResponse($request);
+        }
+
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    protected function attemptLogin(Request $request)
+    {
+        return $this->guard()->attempt(
+            ['id_pegawai' => $this->id_pegawai, 'password' => $request['password']], $request->boolean('remember')
+        );
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        // return dd($user);
+        error_log('berhasil masuk');
+    }
+
 }
