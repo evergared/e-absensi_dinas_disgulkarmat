@@ -90,7 +90,7 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
-            ['id_pegawai' => $this->id_pegawai, 'password' => $request['password']], $request->boolean('remember')
+            ['id_pegawai' => $this->id_pegawai, 'password' => $request['password']], $request->boolean('ingat')
         );
     }
 
