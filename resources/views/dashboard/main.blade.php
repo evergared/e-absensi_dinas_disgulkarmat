@@ -35,14 +35,14 @@
                         </div>
                         <div class="card-footer">
                             <small id="tgl-libur">99 Agustus 1999</small>
-                            <h4 id="tgl-libur-des">Hari Kebangkitan</h4>
+                            <h4 id="tgl-libur-des">Hari Libur</h4>
                         </div>
                     </div>
                 </div>
                 <div class="col col-lg-6">
                     <div class="card mb-2">
                         <div class="card-header">
-                            <i class="fa-solid fa-calendar-days"></i> Kalender Piket
+                            <i class="fa-solid fa-calendar-days"></i> Kalender Regu Piket
                         </div>
                         <div class="card-body overflow-auto">
                             <div id="kalender-piket"></div>

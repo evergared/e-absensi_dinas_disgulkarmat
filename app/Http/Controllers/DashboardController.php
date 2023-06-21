@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pegawai;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -31,7 +32,8 @@ class DashboardController extends Controller
     #region ubah absensi
     public function tampilUbahAbsensiHarian(Request $r)
     {
-        return view('dashboard.absensi-harian');
+        $data = Pegawai::all();
+        return view('dashboard.absensi-harian')->with('data',$data);
     }
 
     public function tampilUbahAbsensiApel(Request $r)

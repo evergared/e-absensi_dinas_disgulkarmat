@@ -34,11 +34,11 @@
     <script>
         $(document).ready(function () {
                 $('#table-pegawai').DataTable({
-                    "data" : 'pegawai',
-                    "columns" : [
-                        {"data" : "nrk", "title" : "NRK"},
-                        {"data" : "nip", "title" : "NIP"},
-                        {"data" : "nama", "title" : "Nama"},
+                    data : 'pegawai',
+                    columns : [
+                        {data : "nrk", title : "NRK"},
+                        {data : 'nip', title : "NIP"},
+                        {data : 'nama', title : "Nama"},
                     ]
                 });
             });
