@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Resources\PegawaiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,3 +33,5 @@ Route::get('/admin/data-absensi', [App\Http\Controllers\DashboardController::cla
 Route::get('/admin/manage-pegawai', [App\Http\Controllers\DashboardController::class, 'tampilManagePegawai'])->name('manage-pegawai');
 Route::get('/admin/manage-user', [App\Http\Controllers\DashboardController::class, 'tampilManageUser'])->name('manage-user');
 #endregion
+
+Route::resource('pegawai',PegawaiController::class);
