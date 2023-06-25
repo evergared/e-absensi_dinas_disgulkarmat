@@ -31,15 +31,19 @@
 @endpush
 
 @push('stack-body')
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
                 $('#table-pegawai').DataTable({
-                    data : 'pegawai',
+                    processing : true,
+                    serverSide : true,
+                    ajax : {
+                        url : "/pegawai",
+                    },
                     columns : [
                         {data : "nrk", title : "NRK"},
                         {data : 'nip', title : "NIP"},
-                        {data : 'nama', title : "Nama"},
-                    ]
+                        {data : 'nama', title : "Nama"}
+                    ],
                 });
             });
     </script>
