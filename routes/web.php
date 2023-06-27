@@ -34,4 +34,15 @@ Route::get('/admin/manage-pegawai', [App\Http\Controllers\DashboardController::c
 Route::get('/admin/manage-user', [App\Http\Controllers\DashboardController::class, 'tampilManageUser'])->name('manage-user');
 #endregion
 
+#region kalender
+Route::get('/kalender/libur',[\App\Http\Controllers\CalendarController::class,'indexLibur'])->name("kalender.libur");
+Route::get('/kalender/regupiket',[\App\Http\Controllers\CalendarController::class,'indexPiketGrup'])->name("kalender.regu.piket");
+#endregion
+
+#region jadwal piket grup/regu
+Route::get('/piket/regu',[\App\Http\Controllers\GrupPiketController::class,'index'])->name('piket.regu');
+#endregion
+
+#region resources
 Route::resource('pegawai',PegawaiController::class);
+#endregion

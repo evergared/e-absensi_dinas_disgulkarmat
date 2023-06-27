@@ -34,7 +34,9 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <small id="tgl-libur">99 Agustus 1999</small>
+                            <small id="tgl-libur-skrg">Libur Hari ini <span id="libur-skrg"></span>: </small>
+                            <h4 id="tgl-libur-skrg-des">-</h4>
+                            <small id="tgl-libur">20 des 2023</small>
                             <h4 id="tgl-libur-des">Hari Libur</h4>
                         </div>
                     </div>
@@ -59,56 +61,51 @@
 
 
             @push('stack-head')
-                <link href="{{asset('css/zabuto_calendar.css')}}" rel="stylesheet">
-                <script src="{{asset('js/zabuto_calendar.js')}}"></script>
+                <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.8/index.global.min.js"></script>
             @endpush
 
             @push('stack-body')
                 <script>
 
-                    // start konfigurasi kalender
-                        var k_libur = $("#kalender-libur");
-                        $(document).ready(function () {
-                                k_libur.zabuto_calendar({
-                                    classname: 'table table-bordered border-black kalender-zabuto',
-                                    language: 'id',
-                                    navigation_markup:{
-                                        prev : '<i class="fa-solid fa-circle-chevron-left"></i>',
-                                        next : '<i class="fa-solid fa-circle-chevron-right"></i>'
-                                    },
-                                    today_markup:'<span class="badge bg-secondary">[day]</span>'
-                                });
-                            });
+                   document.addEventListener('DOMContentLoaded',function(){
+                    var libur = document.getElementById("kalender-libur");
+                    var kalenderLibur = new FullCalendar.Calendar(libur,{
+                        initialView: 'dayGridMonth',
+                        googleCalendarApiKey : 'AIzaSyBya1TO3DIt8pvecV50bAUPxWVQgtWCdWI',
+                        locale : 'id',
+                        events : {
+                            googleCalendarId : 'id.indonesian#holiday@group.v.calendar.google.com',
+                        color : 'red',
+                        display : 'background',
+                        textColor : 'red'
+                        },
+                        eventTextColor : "#ffffff",
+                        eventClick : function (args){
+                            console.log(args.event.summary);
+                            
+                        },
+                    });
+                    kalenderLibur.render();
 
-                        var k_piket = $("#kalender-piket");
-                        $(document).ready(function () {
-                                k_piket.zabuto_calendar({
-                                    classname: 'table table-bordered border-black kalender-zabuto',
-                                    language: 'id',
-                                    navigation_markup:{
-                                        prev : '<i class="fa-solid fa-circle-chevron-left"></i>',
-                                        next : '<i class="fa-solid fa-circle-chevron-right"></i>'
-                                    },
-                                    today_markup:'<span class="badge bg-secondary">[day]</span>'
-                                });
-                            });
-                    // end konfigurasi kalender
 
-                    // start event kalender
-
-                        k_libur.on('zabuto:calendar:day', function (e){
-
-                        })
-
-                    // end event kalender
-
+                    var piket = document.getElementById("kalender-piket");
+                    var kalenderPiket = new FullCalendar.Calendar(piket,{
+                        initialView : 'dayGridMonth',
+                        googleCalendarApiKey : 'AIzaSyBya1TO3DIt8pvecV50bAUPxWVQgtWCdWI',
+                        locale : 'id',
+                        events :
+                            {
+                                googleCalendarId : '5aa7aad35b435458402cd252df0e349a56650cd8d1d9bc7c7ad49b6988abfd4e@group.calendar.google.com',
+                            }
+                          
+                    });
+                    kalenderPiket.render();
+                   });
                 </script>
 
                 <style>
-                    table.kalender-zabuto tbody td:nth-child(n+6){
-                        background-color: #fd260083;
-                        
-                    }
+                   
                 </style>
             @endpush
             

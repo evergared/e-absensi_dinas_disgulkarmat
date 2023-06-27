@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\GrupPiketController;
+use App\Models\JadwalPiketGrup;
 use App\Models\Pegawai;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -40,5 +42,9 @@ class DatabaseSeeder extends Seeder
 
             $user->save();
         }
+
+        $jadwal_piket = new GrupPiketController;
+
+        $jadwal_piket->buatJadwalPiket(today()->month);
     }
 }
