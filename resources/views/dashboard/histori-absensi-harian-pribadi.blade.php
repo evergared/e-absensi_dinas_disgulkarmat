@@ -1,4 +1,4 @@
-@extends('layouts.sb-admin_dashboard-frame')
+@extends('layouts.sb-admin_dashboard-frame',['dashboard_title' => 'Histori Absensi Harian Anda'])
 
 @section('content')
             
