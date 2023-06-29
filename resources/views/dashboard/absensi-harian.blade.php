@@ -1,10 +1,6 @@
-@extends('layouts.absensi-dinas-dashboard-layout')
+@extends('layouts.sb-admin_dashboard-frame')
 
 @section('content')
-        <div class="container-fluid px-4">
-
-            <h1 class="mt-4">Absensi Harian</h1>
-            @include('layouts.others.breadcrumbs')
             
             <div class="card">
                 <div class="card-header">
@@ -38,5 +34,4 @@
 
                 </div>
             </div>
-        </div>
 @endsection

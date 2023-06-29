@@ -1,10 +1,6 @@
-@extends('layouts.absensi-dinas-dashboard-layout')
+@extends('layouts.sb-admin_dashboard-frame')
 
 @section('content')
-        <div class="container-fluid px-4">
-
-            <h1 class="mt-4">Dashboard</h1>
-            @include('layouts.others.breadcrumbs')
             
             {{-- start status card --}}
             <div class="card bg-primary text-white text-center mx-auto col-lg-6 mb-3">
@@ -108,7 +104,5 @@
                    
                 </style>
             @endpush
-            
         
-        </div>
 @endsection

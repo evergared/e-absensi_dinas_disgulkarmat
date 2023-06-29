@@ -16,16 +16,16 @@
     </head>
     <body >
 
-        @include('layouts.nav.dashboard-topnav')
+        @include('layouts.nav.sb-admin_dashboard-topnav')
 
         <div id="layoutSidenav">
 
-            @include('layouts.nav.dashboard-sidebar')
+            @include('layouts.nav.sb-admin_dashboard-sidebar')
 
             <div id="layoutSidenav_content">
 
                 <main>
-                    @yield('content')
+                    @yield('content-frame')
                 </main>
 
                 @include('layouts.footer.dashboard-footer')
