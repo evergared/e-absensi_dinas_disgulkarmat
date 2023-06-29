@@ -19,9 +19,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected   $table = "user",
-                $primaryKey = "id_pegawai",
+                $primaryKey = "nip",
                 $fillable = [
-                    'id_pegawai',
+                    'nip',
                     'password',
                     'override_role',
                     'override_role_enum'
@@ -49,6 +49,6 @@ class User extends Authenticatable
 
     public function data()
     {
-        return $this->belongsTo(Pegawai::class,'id_pegawai','id');
+        return $this->belongsTo(Pegawai::class,'nip','nip');
     }
 }
