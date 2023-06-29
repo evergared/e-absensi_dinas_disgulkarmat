@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\Role;
 use Illuminate\Support\Facades\Facade;
 
 return [
@@ -191,7 +192,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // ...
+        'role' => Role::class
     ])->toArray(),
 
 ];

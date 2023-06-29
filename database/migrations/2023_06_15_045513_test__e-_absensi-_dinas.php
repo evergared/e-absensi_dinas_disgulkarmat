@@ -15,10 +15,31 @@ return new class extends Migration
     {
         
 
+
+        Schema::create('jadwal_piket_grup', function (Blueprint $table) {
+            $table->string('tanggal');
+            $table->string('jadwal');
+            $table->string('grup',1);
+            $table->timestamps();
+        });
+
+        Schema::create('jabatan', function (Blueprint $table) {
+            $table->ulid('id_jabatan')->primary();
+            $table->string('nama_jabatan');
+            $table->tinyInteger('role_enum')->default(3);
+            $table->timestamps();
+        });
+
+        Schema::create('penempatan', function (Blueprint $table) {
+            $table->ulid('id_penempatan')->primary();
+            $table->string('nama_penempatan');
+            $table->timestamps();
+        });
+
+        
         Schema::create('pegawai', function (Blueprint $table) {
-            $table->ulid('id')->primary();
+            $table->string('nip')->primary();
             $table->string('nrk')->nullable();
-            $table->string('nip')->nullable();
             $table->string('nama')->nullable();
             $table->string('grup',1);
             $table->foreignUlid('jabatan')->references('id_jabatan')->on('jabatan');
@@ -30,39 +51,26 @@ return new class extends Migration
         });
 
         Schema::create('user', function (Blueprint $table) {
-            $table->foreignUlid('id_pegawai')->references('id')->on('pegawai');
+            $table->string('nip');
             $table->string('password');
+            $table->boolean('override_role')->default(false);
+            $table->tinyInteger('role_enum_override')->default(3);
             $table->rememberToken();
             $table->timestamps();
-        });
 
-        Schema::create('jadwal_piket_grup', function (Blueprint $table) {
-            $table->string('tanggal');
-            $table->string('tipe');
-            $table->string('grup',1);
-            $table->timestamps();
-        });
-
-        Schema::create('jabatan', function (Blueprint $table) {
-            $table->ulid('id_jabatan',8)->primary();
-            $table->string('nama_jabatan');
-            $table->timestamps();
-        });
-
-        Schema::create('penempatan', function (Blueprint $table) {
-            $table->ulid('id_penempatan',8)->primary();
-            $table->string('nama_penempatan');
-            $table->timestamps();
+            $table->foreign('nip')->references('nip')->on('pegawai');
         });
 
         Schema::create('absensi', function (Blueprint $table) {
             $table->string('tanggal');
-            $table->foreignUlid('id_pegawai')->references('id')->on('pegawai');
+            $table->string('nip');
             $table->string('grup',1);
-            $table->string('tipe_jadwal');
-            $table->string('status');
+            $table->string('jadwal');
+            $table->string('kehadiran');
             $table->text('keterangan')->nullable();
             $table->timestamps();
+
+            $table->foreign('nip')->references('nip')->on('pegawai');
         });
 
     }
@@ -77,7 +85,7 @@ return new class extends Migration
         if(Schema::hasTable('user'))
         {
             Schema::table('user', function(Blueprint $t){
-                $t->dropConstrainedForeignId('id_pegawai');
+                $t->dropConstrainedForeignId('nip');
             });
         }
         if(Schema::hasTable('pegawai'))
@@ -90,7 +98,7 @@ return new class extends Migration
         if(Schema::hasTable('absensi'))
         {
             Schema::table('absensi', function(Blueprint $t){
-                $t->dropConstrainedForeignId('id_pegawai');
+                $t->dropConstrainedForeignId('nip');
             });
         }
         Schema::dropIfExists('user');

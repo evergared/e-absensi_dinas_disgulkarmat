@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,6 +23,8 @@ class User extends Authenticatable
                 $fillable = [
                     'id_pegawai',
                     'password',
+                    'override_role',
+                    'override_role_enum'
                 ];
 
     /**
@@ -41,6 +44,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         // 'email_verified_at' => 'datetime',
+        'override_role_enum' => Role::class
     ];
 
     public function data()

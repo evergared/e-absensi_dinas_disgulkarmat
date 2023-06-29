@@ -24,7 +24,7 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    protected $id_pegawai = "";
+    protected $nip = "";
 
     /**
      * Where to redirect users after login.
@@ -50,17 +50,17 @@ class LoginController extends Controller
 
 
         #region cek nip/nrk
-        $this->id_pegawai = "";
+        $this->nip = "";
         if($pegawai = Pegawai::where('nip','=',$request['email'])->where("aktif",true)->get()->first())
         {
-            $this->id_pegawai = $pegawai->id;
+            $this->nip = $pegawai->nip;
         }
         elseif($pegawai = Pegawai::where('nrk','=',$request['email'])->where("aktif",true)->get()->first())
         {
-            $this->id_pegawai = $pegawai->id;
+            $this->nip = $pegawai->nip;
         }
 
-        if($this->id_pegawai == "")
+        if($this->nip == "")
         {
             return $this->sendFailedLoginResponse($request);
         }
@@ -90,7 +90,7 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
-            ['id_pegawai' => $this->id_pegawai, 'password' => $request['password']], $request->boolean('ingat')
+            ['nip' => $this->nip, 'password' => $request['password']], $request->boolean('ingat')
         );
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\Jadwal;
 use App\Models\JadwalPiketGrup;
 use Carbon\Carbon;
 use GuzzleHttp\Promise\Create;
@@ -55,7 +56,7 @@ class GrupPiketController extends Controller
                         
                     $piket = new JadwalPiketGrup([
                         'tanggal' => $tanggal->toDateString(),
-                        'tipe' => 'piket',
+                        'jadwal' => Jadwal::PIKET,
                         'grup' => $grup
                     ]);
 
@@ -64,7 +65,7 @@ class GrupPiketController extends Controller
                     // lepas
                     $lepas = new JadwalPiketGrup([
                         'tanggal' => $tanggal->toDateString(),
-                        'tipe' => 'lepas',
+                        'jadwal' => Jadwal::LEPAS,
                         'grup' => $this->grupSebelum($grup)
                     ]);
 
@@ -75,7 +76,7 @@ class GrupPiketController extends Controller
                     {
                         $cadangan = new JadwalPiketGrup([
                             'tanggal' => $tanggal->toDateString(),
-                            'tipe' => 'cadangan',
+                            'jadwal' => Jadwal::CADANGAN,
                             'grup' => $this->grupSetelah($grup)
                         ]);
                         $cadangan->save();

@@ -11,7 +11,7 @@ class Pegawai extends Model
 
     protected 
         $table = "pegawai",
-        $primaryKey = "id";
+        $primaryKey = "nip";
 
     protected $fillable = [
         'nama',
@@ -20,4 +20,23 @@ class Pegawai extends Model
         'email',
         'aktif',
     ];
+
+    protected $casts = [
+
+    ];
+
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class,'jabatan','id_jabatan');
+    }
+
+    public function penempatan()
+    {
+        return $this->belongsTo(Penempatan::class,'penempatan','id_penempatan');
+    }
+
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class,'nip','nip');
+    }
 }
