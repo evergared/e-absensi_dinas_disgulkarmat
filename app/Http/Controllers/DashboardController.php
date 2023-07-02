@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absensi;
+use App\Models\JadwalPiketGrup;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 
@@ -45,7 +47,49 @@ class DashboardController extends Controller
     #region user pimpinan
     public function tampilPimpinanAbsensiAnggota(Request $r)
     {
-        return view('dashboard.pimpinan-absensi-anggota');
+        $hr_ini = today()->toDateString();
+        $piket = JadwalPiketGrup::where('tanggal','=',$hr_ini)->where("jadwal",'piket')->first();
+        $lepas = JadwalPiketGrup::where('tanggal','=',$hr_ini)->where("jadwal",'lepas')->first();
+        $cadangan = JadwalPiketGrup::where('tanggal','=',$hr_ini)->where("jadwal",'cadangan')->first();
+
+        error_log('piket : '.$piket);
+        error_log('lepas : '.$lepas);
+        error_log('cadangan : '.$cadangan);
+
+        $list_pegawai = [];
+        $pernah_absen = Absensi::where("tanggal",$hr_ini)->exists();
+
+        if(!is_null($piket))
+        {
+            $piket = $piket->grup;
+            if(!$pernah_absen)
+                foreach(Pegawai::where("grup",$piket)->get()->toArray() as $pegawai)
+                    $list_pegawai[] = $pegawai;
+        }
+        if(!is_null($cadangan))
+        {
+            $cadangan = $cadangan->grup;
+            if(!$pernah_absen)
+                foreach(Pegawai::where("grup",$cadangan)->get()->toArray() as $pegawai)
+                    $list_pegawai[] = $pegawai;
+        }
+        if(!is_null($lepas))
+        {
+            $lepas = $lepas->grup;
+            if(!$pernah_absen)
+                foreach(Pegawai::where("grup",$lepas)->get()->toArray() as $pegawai)
+                    $list_pegawai[] = $pegawai;
+        }
+        
+
+
+        return view('dashboard.pimpinan-absensi-anggota')->with([
+            'r_piket' => $piket,
+            'r_cadangan' => $cadangan,
+            'r_lepas' => $lepas,
+            'list_pegawai' => $list_pegawai,
+            'sudah_absen' => $pernah_absen
+        ]);
     }
 
     public function tampilPimpinanHistoriAbsensiAnggota(Request $r)

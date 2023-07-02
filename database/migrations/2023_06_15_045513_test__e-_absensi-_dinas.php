@@ -64,8 +64,7 @@ return new class extends Migration
         Schema::create('absensi', function (Blueprint $table) {
             $table->string('tanggal');
             $table->string('nip');
-            $table->string('grup',1);
-            $table->string('jadwal');
+            $table->string('grup',1)->nullable();
             $table->string('kehadiran');
             $table->text('keterangan')->nullable();
             $table->timestamps();

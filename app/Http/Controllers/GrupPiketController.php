@@ -14,15 +14,30 @@ class GrupPiketController extends Controller
 
     public function index(Request $r)
     {
+        $grup = JadwalPiketGrup::query();
+
         if($r->exists('today'))
         {
             error_log('meminta regu piket hari ini');
-            $grup = JadwalPiketGrup::where('tanggal','=',today()->toDateString())->first();
+            $grup = $grup->where('tanggal','=',today()->toDateString())->where("jadwal",'=',$r->input("today"))->first();
+
             if(!is_null($grup))
                 return $grup->grup;
             else
                 return "-";
         }
+        elseif($r->exists('jadwal'))
+        {
+            error_log('meminta list jadwal');
+            $grup = $grup->where("jadwal",'=',$r->input("jadwal"))->get();
+
+            if(!is_null($grup))
+                return $grup->grup;
+            else
+                return "-";
+        }
+
+        return "test";
     }
 
     public function buatJadwalPiket(int|string $bulan, string $grup_tgl_1 = "A")

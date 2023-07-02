@@ -1,276 +1,222 @@
-@extends('layouts.sb-admin_dashboard-frame',['dashboard_title' => 'Histori Absen Anggota'])
+@extends('layouts.sb-admin_dashboard-frame',['dashboard_title' => 'Rekap Absensi'])
 
 @section('content')
-            <div class="card">
-                <div class="card-header">
-                    <h2>Absen Harian</h2>
-                </div>
-                <div class="card-body overflow-auto">
-                    <div id="kalender-histori"></div>
-                </div>
-                <div class="card-footer">
+                    <div class="row  mx-2 my-2">
+                            <div class="spinner-border text-info" role="status" id="spinner" style="visibility: hidden">
+                                <span class="visually-hidden">Memuat....</span>
+                            </div>
+                            <small>Pilih tanggal untuk memuat absensi.</small>
+                            <div class="col-lg-4 material-theme" id="kalender-histori" ></div>
+                                
+                            <div id="card-listing" class="card d-flex flex-wrap col-lg-6 my-2 mx-auto">
+                                <div class="card-header">
+                                    <h6>Data Absensi <u id="underline-tanggal"></u></h6>
+                                    {{-- <small><i>klik angka dibawah untuk inisiasi tabel</i></small> --}}
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="d-none d-sm-block">
+                                        <div class="row">
+                                            <div class="col my-5" id="text-piket">
+                                                <h5>Jumlah Hadir Piket : <a id="link-piket" style="cursor: pointer;" onclick="panggilTabel('piket')"></a> </h5>
+                                            </div>
+                                            <div class="col my-5" id="text-lepas">
+                                                <h5>Jumlah Lepas Piket : <a id="link-lepas" style="cursor: pointer;" onclick="panggilTabel('lepas')"></a> </h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col my-5">
+                                                <h5>Jumlah Izin/Sakit/dll : <a id="link-tidak-hadir" style="cursor: pointer;" onclick="panggilTabel('tidak_hadir')"></a> </h5>
+                                            </div>
+                                            <div class="col my-5" id="text-cadangan" style="visibility: hidden">
+                                                <h5>Jumlah Hadir Cadangan : <a id="link-cadangan" style="cursor: pointer;" onclick="panggilTabel('cadangan')"></a> </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-block d-sm-none">
+                                        <small id="text-tanggal-m"></small>
+                                            <div class="row my-4" id="text-piket">
+                                                <h5>Jumlah Hadir Piket : <a id="link-piket-m" style="cursor: pointer;" onclick="panggilTabel('piket')"></a> </h5>
+                                            </div>
+                                            <div class="row my-4" id="text-lepas">
+                                                <h5>Jumlah Lepas Piket : <a id="link-lepas-m" style="cursor: pointer;" onclick="panggilTabel('lepas')"></a> </h5>
+                                            </div>
+                                            <div class="row my-4">
+                                                <h5>Jumlah Izin/Sakit/dll : <a id="link-tidak-hadir-m" style="cursor: pointer;" onclick="panggilTabel('tidak_hadir')"></a> </h5>
+                                            </div>
+                                            <div class="row my-4" id="text-cadangan-m" style="visibility: hidden">
+                                                <h5>Jumlah Hadir Cadangan : <a id="link-cadangan-m" style="cursor: pointer;" onclick="panggilTabel('cadangan')"></a> </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                    </div>
 
-                </div>
+            
+
+            <div id="card-tabel" class="card mx-auto p-2 overflow-auto"  style="max-width: 1600px">
+                <table id="tabel" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>NIP</th>
+                            <th>Jabatan</th>
+                            <th>Penempatan</th>
+                            <th>Grup</th>
+                            <th>Status</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
 @endsection
 
+{{-- start Untuk Kalender --}}
 @push('stack-head')
-    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+<!-- jsCalendar v1.4.3 Javascript and CSS from jsdelivr npm cdn -->
+<script src="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.3/source/jsCalendar.min.js" integrity="sha384-JqNLUzAxpw7zEu6rKS/TNPZ5ayCWPUY601zaig7cUEVfL+pBoLcDiIEkWHjl07Ot" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.3/source/jsCalendar.min.css" integrity="sha384-+OB2CadpqXIt7AheMhNaVI99xKH8j8b+bHC8P5m2tkpFopGBklD3IRvYjPekeWIJ" crossorigin="anonymous">
+@endpush
+
+@push('stack-body')
+    <script type="text/javascript">
+
+        var spinner = document.getElementById("spinner");
+    
+        var kalender =
+        jsCalendar.new({
+            target : document.getElementById("kalender-histori"),
+            navigator : true,
+            navigatorPosition : "both",
+            zeroFill : false,
+            monthFormat : "month YYYY",
+            dayFormat : "DDD",
+            language : "id"
+        });
+
+        kalender.onDateClick(function(event,date){
+            spinner.style.visibility = "visible"
+            const bulan = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+            var y = date.getFullYear().toString();
+            var m = bulan[date.getMonth()];
+            var d = ('0' + date.getDate().toString()).slice(-2);
+
+            var tanggal = y+'-'+m+'-'+d;
+
+            $.ajax({
+               type:'GET',
+               url:'/absensi?cek='+tanggal+"&jumlah="+true,
+               data:'_token = <?php echo csrf_token() ?>',
+               success:function(data) {
+                    if(data.ada)
+                    {
+                        document.getElementById("underline-tanggal").innerHTML = tanggal;
+
+                        document.getElementById('link-piket').innerHTML = data.piket;
+                        document.getElementById('link-cadangan').innerHTML = data.cadangan;
+                        document.getElementById('link-lepas').innerHTML = data.lepas;
+                        document.getElementById('link-tidak-hadir').innerHTML = data.tdk_hadir;
+
+                        document.getElementById('link-piket-m').innerHTML = data.piket;
+                        document.getElementById('link-cadangan-m').innerHTML = data.cadangan;
+                        document.getElementById('link-lepas-m').innerHTML = data.lepas;
+                        document.getElementById('link-tidak-hadir-m').innerHTML = data.tdk_hadir;
+
+                        if(data.cadangan > 0)
+                        {
+
+                        document.getElementById('text-cadangan').visibility = "visible";
+                        document.getElementById('text-cadangan-m').visibility = "visible";
+                        }
+                        else
+                        {
+
+                        document.getElementById('text-cadangan').visibility = "hidden";
+                        document.getElementById('text-cadangan-m').visibility = "hidden";
+                        }
+
+                    }
+
+                    spinner.style.visibility = "hidden"
+                    
+               }
+            });
+
+            kalender.clearselect();
+            kalender.select(date);
+        });
+
+        
+
+        kalender.onDateRender(function(date, element, info) {
+		// Make weekends bold and red
+        console.log("date render")
+		if (!info.isCurrent && (date.getDay() == 0 || date.getDay() == 6)) {
+			element.style.fontWeight = 'bold';
+			element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
+		}
+	    });
+        
+        kalender.refresh();
+      
+
+        
+        
+    </script>
+@endpush
+{{-- end Untuk Kalender --}}
+
+
+{{-- start Untuk datatable --}}
+@push('stack-head')
+{{-- datatable --}}
+{{-- sumber : https://datatables.net/download/ --}}
+    <link href="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.13.4/af-2.5.3/b-2.3.6/b-colvis-2.3.6/b-html5-2.3.6/b-print-2.3.6/cr-1.6.2/date-1.4.1/fc-4.2.2/fh-3.3.2/r-2.4.1/rg-1.3.1/rr-1.3.3/sc-2.1.1/sb-1.4.2/sp-2.1.2/sl-1.6.2/datatables.min.css" rel="stylesheet"/>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.13.4/af-2.5.3/b-2.3.6/b-colvis-2.3.6/b-html5-2.3.6/b-print-2.3.6/cr-1.6.2/date-1.4.1/fc-4.2.2/fh-3.3.2/r-2.4.1/rg-1.3.1/rr-1.3.3/sc-2.1.1/sb-1.4.2/sp-2.1.2/sl-1.6.2/datatables.min.js"></script>
 @endpush
 
 @push('stack-body')
     <script>
-        var myConfig = {
-                type: 'calendar',
-                options: {
-                    year: {
-                    text: '2023',
-                    visible: false
-                    },
-                    startMonth: 1,
-                    endMonth: 6,
-                    palette: ['none', '#2196F3'],
-                    month: {
-                    item: {
-                        fontColor: 'gray',
-                        fontSize: 9
-                    }
-                    },
-                    weekday: {
-                    values: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
-                    item: {
-                        fontColor: 'gray',
-                        fontSize: 9
-                    }
-                    },
-                    values: [
-                    ['2023-01-01', 3],
-                    ['2023-01-04', 12],
-                    ['2023-01-05', 3],
-                    ['2023-01-06', 4],
-                    ['2023-01-07', 9],
-                    ['2023-01-08', 11],
-                    ['2023-01-11', 5],
-                    ['2023-01-12', 5],
-                    ['2023-01-13', 9],
-                    ['2023-01-14', 9],
-                    ['2023-01-15', 9],
-                    ['2023-01-18', 4],
-                    ['2023-01-19', 6],
-                    ['2023-01-20', 5],
-                    ['2023-01-21', 6],
-                    ['2023-01-22', 2],
-                    ['2023-01-25', 5],
-                    ['2023-01-26', 9],
-                    ['2023-01-27', 6],
-                    ['2023-01-28', 6],
-                    ['2023-01-29', 7],
-                    ['2023-02-01', 7],
-                    ['2023-02-02', 12],
-                    ['2023-02-03', 3],
-                    ['2023-02-04', 3],
-                    ['2023-02-05', 9],
-                    ['2023-02-08', 9],
-                    ['2023-02-09', 9],
-                    ['2023-02-10', 4],
-                    ['2023-02-11', 5],
-                    ['2023-02-12', 8],
-                    ['2023-02-15', 8],
-                    ['2023-02-16', 3],
-                    ['2023-02-17', 7],
-                    ['2023-02-18', 5],
-                    ['2023-02-19', 9],
-                    ['2023-02-22', 6],
-                    ['2023-02-23', 5],
-                    ['2023-02-24', 8],
-                    ['2023-02-25', 10],
-                    ['2023-02-26', 4],
-                    ['2023-02-29', 5],
-                    ['2023-03-01', 9],
-                    ['2023-03-02', 9],
-                    ['2023-03-03', 3],
-                    ['2023-03-04', 3],
-                    ['2023-03-07', 4],
-                    ['2023-03-08', 2],
-                    ['2023-03-09', 10],
-                    ['2023-03-10', 9],
-                    ['2023-03-11', 7],
-                    ['2023-03-14', 8],
-                    ['2023-03-15', 7],
-                    ['2023-03-16', 8],
-                    ['2023-03-17', 8],
-                    ['2023-03-18', 2],
-                    ['2023-03-21', 3],
-                    ['2023-03-22', 4],
-                    ['2023-03-23', 5],
-                    ['2023-03-24', 6],
-                    ['2023-03-25', 7],
-                    ['2023-03-28', 8],
-                    ['2023-03-29', 8],
-                    ['2023-03-30', 9],
-                    ['2023-03-31', 7],
-                    ['2023-04-01', 9],
-                    ['2023-04-04', 7],
-                    ['2023-04-05', 5],
-                    ['2023-04-06', 6],
-                    ['2023-04-07', 9],
-                    ['2023-04-08', 4],
-                    ['2023-04-11', 8],
-                    ['2023-04-12', 9],
-                    ['2023-04-13', 3],
-                    ['2023-04-14', 5],
-                    ['2023-04-15', 5],
-                    ['2023-04-18', 8],
-                    ['2023-04-19', 8],
-                    ['2023-04-20', 9],
-                    ['2023-04-21', 3],
-                    ['2023-04-22', 6],
-                    ['2023-04-25', 12],
-                    ['2023-04-26', 6],
-                    ['2023-04-27', 5],
-                    ['2023-04-28', 5],
-                    ['2023-04-29', 11],
-                    ['2023-05-02', 9],
-                    ['2023-05-03', 3],
-                    ['2023-05-04', 5],
-                    ['2023-05-05', 4],
-                    ['2023-05-06', 9],
-                    ['2023-05-09', 5],
-                    ['2023-05-10', 5],
-                    ['2023-05-11', 7],
-                    ['2023-05-12', 7],
-                    ['2023-05-13', 5],
-                    ['2023-05-16', 3],
-                    ['2023-05-17', 2],
-                    ['2023-05-18', 7],
-                    ['2023-05-19', 5],
-                    ['2023-05-20', 3],
-                    ['2023-05-23', 9],
-                    ['2023-05-24', 11],
-                    ['2023-05-25', 5],
-                    ['2023-05-26', 9],
-                    ['2023-05-27', 4],
-                    ['2023-05-30', 5],
-                    ['2023-05-31', 7],
-                    ['2023-06-01', 9],
-                    ['2023-06-02', 5],
-                    ['2023-06-03', 5],
-                    ['2023-06-06', 6],
-                    ['2023-06-07', 7],
-                    ['2023-06-08', 8],
-                    ['2023-06-09', 5],
-                    ['2023-06-10', 8],
-                    ['2023-06-13', 6],
-                    ['2023-06-14', 6],
-                    ['2023-06-15', 2],
-                    ['2023-06-16', 7],
-                    ['2023-06-17', 5],
-                    ['2023-06-20', 5],
-                    ['2023-06-21', 8],
-                    ['2023-06-22', 8],
-                    ['2023-06-23', 8],
-                    ['2023-06-24', 10],
-                    ['2023-06-27', 7],
-                    ['2023-06-28', 12],
-                    ['2023-06-29', 7],
-                    ['2023-06-30', 6],
-                    ]
-                },
-                labels: [{ //Lefthand Label (container portion)
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    x: '8%',
-                    y: '60%',
-                    width: '40%',
-                    height: '30%'
-                    },
-                    { //Lefthand Label (top portion)
-                    text: 'Daily Contribution',
-                    fontColor: '#212121',
-                    textAlign: 'center',
-                    x: '10%',
-                    y: '65%',
-                    width: '36%'
-                    },
-                    { //Lefthand Label (middle portion)
-                    text: '%plot-value',
-                    fontColor: '#2196F3',
-                    fontFamily: 'Georgia',
-                    fontSize: 35,
-                    textAlign: 'center',
-                    x: '10%',
-                    y: '68%',
-                    width: '36%'
-                    },
-                    // Note: the bottom portion of the Bottom-Left Label is the fixed tooltip, below.
+        var tabel = initTabelKosong()
+
+        function panggilTabel(tipe){
+            
+            tabel.destroy();    
+                var tanggal = document.getElementById("underline-tanggal").innerHTML;
+                var ajax_url = '/absensi?rekap='+tanggal+'&tipe='+tipe;
+                tabel = $('#tabel').DataTable({
+                            processing : true,
+                            serverSide : true,
+                            ajax : {
+                                url : ajax_url
+                            },
+                            dom: 'Bfrtip',
+                            buttons :[
+                                'excelHtml5',
+                                'csvHtml5',
+                                'pdfHtml5'
+                            ],
+                            columns : [
+                                {data : 'nama',name : 'pegawai.nama', title : "Nama"},
+                                {data : 'nip', title : "NIP"},
+                                {data : 'jabatan',name : 'jabatan.nama_jabatan', title : "Jabatan"},
+                                {data : 'penempatan', name : 'penempatan.nama_penempatan', title : "Penempatan"},
+                                {data : 'grup', title : "Group"},
+                                {data : 'status', name : 'absensi.kehadiran', title : "Status"},
+                                {data : 'keterangan',  title : "Keterangan"}
+                            ],
+                })
+            
                 
-                    { //Rightside Label (container portion)
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    x: '52%',
-                    y: '60%',
-                    width: '40%',
-                    height: '30%',
-                    },
-                    { //Rightside Label (top portion)
-                    text: 'Total Contributions',
-                    fontColor: '#212121',
-                    textAlign: 'center',
-                    x: '54%',
-                    y: '65%',
-                    width: '36%'
-                    },
-                    { //Rightside Label (middle portion)
-                    text: '1414',
-                    fontColor: '#2196F3',
-                    fontFamily: 'Georgia',
-                    fontSize: 35,
-                    textAlign: 'center',
-                    x: '54%',
-                    y: '68%',
-                    width: '36%'
-                    },
-                    { //Rightside Label (bottom portion)
-                    text: 'Jan 1 - Jun 30',
-                    fontColor: '#212121',
-                    padding: 2,
-                    textAlign: 'center',
-                    x: '54%',
-                    y: '80%',
-                    width: '36%'
-                    }
-                ],
-                
-                tooltip: { //Lefthand Label (bottom portion)
-                    text: '%data-day',
-                    backgroundColor: 'none',
-                    borderColor: 'none',
-                    fontColor: '#212121',
-                    padding: 2,
-                    //textAlign: 'center',
-                    align: 'center',
-                    sticky: true,
-                    timeout: 30000,
-                    x: '10%',
-                    y: '80%',
-                    width: '36%'
-                },
-                
-                plotarea: {
-                    marginTop: '15%',
-                    marginBottom: '55%',
-                    marginLeft: '8%',
-                    marginRight: '8%'
-                }
-                };
-                
-                zingchart.loadModules('calendar', function() {
-                zingchart.render({
-                    id: 'kalender-histori',
-                    data: myConfig,
-                    height: 400,
-                    width: '100%'
-                });
-            });
+        }
+
+        function initTabelKosong(){
+            $('#tabel').DataTable().destroy();
+            return $('#tabel').DataTable()
+        }
     </script>
 @endpush
+{{-- end Untuk datatable --}}

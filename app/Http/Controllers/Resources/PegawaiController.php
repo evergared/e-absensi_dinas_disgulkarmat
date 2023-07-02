@@ -22,6 +22,11 @@ class PegawaiController extends Controller
         if($r->ajax())
         {
             
+            if($r->exists('penempatan'))
+            {
+                error_log("test dipanggil");
+                $data = $data->where('penempatan','=',$r['penempatan']);
+            }
             error_log('ajax requested');
             return DataTables::eloquent($data)->toJson();
         }

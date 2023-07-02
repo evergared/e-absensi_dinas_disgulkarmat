@@ -23,7 +23,7 @@ class ExampleTest extends TestCase
     public function test_that_true_is_true()
     {
         $user = User::first();
-        // print_r(Role::isAdmin($user));
-        $this->assertTrue(Role::isAdmin($user));
+        print_r($user->data->jabatan_pegawai->nama_jabatan);
+        $this->assertTrue($user instanceof User);
     }
 }

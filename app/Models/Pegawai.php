@@ -25,12 +25,12 @@ class Pegawai extends Model
 
     ];
 
-    public function jabatan()
+    public function jabatan_pegawai()
     {
         return $this->belongsTo(Jabatan::class,'jabatan','id_jabatan');
     }
 
-    public function penempatan()
+    public function penempatan_pegawai()
     {
         return $this->belongsTo(Penempatan::class,'penempatan','id_penempatan');
     }

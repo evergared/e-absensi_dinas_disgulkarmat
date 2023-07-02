@@ -10,7 +10,7 @@ enum Kehadiran : string
     case CUTI = 'cuti';
     case SAKIT = 'sakit';
     case CADANGAN_LIBUR = 'cadangan libur';
-    case TANPA_KETERANGAN = 'alpha';
+    case TIDAK_HADIR = 'tidak hadir';
 
 }
 

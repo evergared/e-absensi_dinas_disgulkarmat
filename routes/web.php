@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Resources\AbsensiController;
 use App\Http\Controllers\Resources\PegawaiController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,4 +46,5 @@ Route::get('/piket/regu',[\App\Http\Controllers\GrupPiketController::class,'inde
 
 #region resources
 Route::resource('pegawai',PegawaiController::class);
+Route::resource('absensi',AbsensiController::class);
 #endregion

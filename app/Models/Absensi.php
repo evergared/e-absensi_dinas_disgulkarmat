@@ -15,20 +15,15 @@ class Absensi extends Model
 
     protected $fillable = [
         'tanggal',
-        'id_pegawai',
-        'grup',
-        'jadwal',
+        'nip',
         'kehadiran',
+        'grup',
         'keterangan'
     ];
 
-    protected $casts = [
-        'kehadiran' => Kehadiran::class,
-        'jadwal' => Jadwal::class
-    ];
 
     public function pegawai()
     {
-        return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id');
+        return $this->belongsTo(Pegawai::class, 'nip', 'nip');
     }
 }

@@ -10,7 +10,7 @@
                     <table id="table-pegawai" class="table table-bordered"></table>
                 </div>
                 <div class="card-footer">
-
+                    <button class="btn btn-primary" onclick="test()">Klik Test</button>
                 </div>
             </div>
 @endsection
@@ -27,8 +27,8 @@
 
 @push('stack-body')
     <script type="text/javascript">
-        $(document).ready(function () {
-                $('#table-pegawai').DataTable({
+        // $(document).ready(function () {
+                var tabel = $('#table-pegawai').DataTable({
                     processing : true,
                     serverSide : true,
                     ajax : {
@@ -40,6 +40,15 @@
                         {data : 'nama', title : "Nama"}
                     ],
                 });
-            });
+
+                
+            // });
+
+            function test()
+                {
+                    console.log("tombol test di klik")
+                    tabel.ajax.url("/pegawai?penempatan=tempat02")
+                    tabel.ajax.reload()
+                }
     </script>
 @endpush

@@ -1,6 +1,10 @@
 @extends('layouts.sb-admin_dashboard-frame',['dashboard_title' => 'Dashboard'])
 
 @section('content')
+
+
+    @if (role::isAdmin(auth()->user()))
+        
             
             {{-- start status card --}}
             <div class="card bg-primary text-white text-center mx-auto col-lg-6 mb-3">
@@ -54,6 +58,8 @@
             </div>
 
             {{-- end kalender --}}
+    @endif
+    
 
 
             @push('stack-head')

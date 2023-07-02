@@ -16,10 +16,5 @@ class JadwalPiketGrup extends Model
         "jadwal",
         "grup"
     ];
-
-    protected $casts = [
-        "jadwal" => Jadwal::class
-    ];
-
     
 }

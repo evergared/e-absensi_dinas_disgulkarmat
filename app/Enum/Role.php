@@ -42,24 +42,25 @@ enum Role : int
 
     static function getRole(User|Pegawai|Jabatan $person) : Role|bool
     {
-        if($person === User::class)
+        if($person instanceof User)
         {
             if($person->override_role)
                 $role = $person->override_role_enum;
             else
-                $role = $person->data->jabatan->role;
+                $role = $person->data->jabatan_pegawai->role_enum;
         }
-        elseif($person === Pegawai::class)
+        elseif($person instanceof Pegawai)
         {
-            $role = $person->jabatan->role;
+            $role = $person->jabatan_pegawai->role_enum;
         }
-        elseif($person === Jabatan::class)
+        elseif($person instanceof Jabatan)
         {
-            $role = $person->role;
+            $role = $person->role_enum;
         }
         else
             return false;
 
+        // error_log("role : ".$role);
         return $role;
     }
 
